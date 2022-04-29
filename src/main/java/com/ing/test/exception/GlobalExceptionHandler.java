@@ -1,0 +1,33 @@
+package com.ing.test.exception;
+
+
+import com.ing.test.exception.dto.ErrorResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+@ControllerAdvice
+@RequestMapping(produces = "application/json")
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleBadRequest(BadRequestException ex){
+        return createErrorResponse(ex);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse handleEntityNotFound(EntityNotFoundException ex){
+        return createErrorResponse(ex);
+    }
+
+    public ErrorResponse createErrorResponse(HttpException ex){
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setStatusCode(ex.getStatusCode());
+        errorResponse.setMessage(ex.getMessage());
+
+        return errorResponse;
+    }
+}
